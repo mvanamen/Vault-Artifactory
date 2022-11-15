@@ -1,0 +1,58 @@
+server:
+  extraInitContainers:
+    - name: jfrogapp
+      image: "alpine"
+      command: [sh, -c]
+      args:
+        - cd /tmp &&
+          wget https://github.com/jfrog/artifactory-secrets-plugin/releases/download/v0.1.2/artifactory-secrets-plugin_0.1.2_linux_amd64.zip -O artifactory-secrets-plugin.zip &&
+          unzip artifactory-secrets-plugin.zip &&
+          mv artifactory-secrets-plugin_v0.1.2 /usr/local/libexec/vault/artifactory &&
+          chmod +x /usr/local/libexec/vault/artifactory
+      volumeMounts:
+        - name: plugins
+          mountPath: /usr/local/libexec/vault
+  volumes:
+    - name: plugins
+      emptyDir: {}
+  # volumeMounts:
+  #   - mountPath: /usr/local/libexec/vault
+  #     name: plugins
+  #     readOnly: true
+  volumeMounts:
+    - mountPath: /usr/local/libexec/vault
+      name: plugins 
+  dev:
+    enabled: true
+    devRootToken: "root"
+  standalone:
+    config: |
+      plugin_directory = "/usr/local/libexec/vault"
+
+      ui = true
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+        # Enable unauthenticated metrics access (necessary for Prometheus Operator)
+        #telemetry {
+        #  unauthenticated_metrics_access = "true"
+        #}
+      }
+      storage "file" {
+        path = "/vault/data"
+      }
+      # Example configuration for using auto-unseal, using Google Cloud KMS. The
+      # GKMS keys must already exist, and the cluster must have a service account
+      # that is authorized to access GCP KMS.
+      #seal "gcpckms" {
+      #   project     = "vault-helm-dev"
+      #   region      = "global"
+      #   key_ring    = "vault-helm-unseal-kr"
+      #   crypto_key  = "vault-helm-unseal-key"
+      #}
+      # Example configuration for enabling Prometheus metrics in your config.
+      #telemetry {
+      #  prometheus_retention_time = "30s",
+      #  disable_hostname = true
+      #}
