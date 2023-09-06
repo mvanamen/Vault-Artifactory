@@ -1,9 +1,9 @@
 locals {
   #Vault Locals
-  vault_resource_group_name     = "Vault_Xsec"
+  vault_resource_group_name     = "Cyber7HoneypodsCluster"
   location                      = "westeurope"
-  vaultcluster_name             = "Xsec"
-  vaultcluster_dns_prefix       = "xsecvaultaks1"
+  vaultcluster_name             = "Cyber7Honeypod"
+  vaultcluster_dns_prefix       = "cybersevenhoneypod"
   vaultcluster_vm_size          = "Standard_D2_v2"
   vaultcluster_node_count       = 1
   vault_client_certificate_file = "client_certificate_key.pem"

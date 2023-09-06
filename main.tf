@@ -52,59 +52,59 @@ resource "local_file" "kube_config" {
 }
 
 
-##########################################################################
-#local executions#                                        
-##########################################################################
+# #########################################################################
+# #local executions#
+# #########################################################################
 
 
-resource "null_resource" "run_command1" {
+# resource "null_resource" "run_command1" {
 
-  provisioner "local-exec" {
+#   provisioner "local-exec" {
 
-    command     = local.run_command1
-    interpreter = local.interpreterpowershell
-  }
-}
+#     command     = local.run_command1
+#     interpreter = local.interpreterpowershell
+#   }
+# }
 
-resource "null_resource" "run_command2" {
+# resource "null_resource" "run_command2" {
 
-  provisioner "local-exec" {
+#   provisioner "local-exec" {
 
-    command     = local.run_command2
-    interpreter = local.interpreterpowershell
-  }
-}
+#     command     = local.run_command2
+#     interpreter = local.interpreterpowershell
+#   }
+# }
 
-resource "null_resource" "run_command3" {
+# resource "null_resource" "run_command3" {
 
-  provisioner "local-exec" {
+#   provisioner "local-exec" {
 
-    command     = local.run_command3
-    interpreter = local.interpreterpowershell
-  }
-}
-
-
-##########################################################################
-#helm#                                        
-##########################################################################
+#     command     = local.run_command3
+#     interpreter = local.interpreterpowershell
+#   }
+# }
 
 
-resource "helm_release" "hashicorp_vault_xsec_vault" {
-  name  = local.helm_vault_name
-  chart = local.helm_vault_chart
-  values = [
-    local.helm_vault_values_file
-  ]
-  set {
-    name  = local.helm_set_value_ui
-    value = local.helm_set_true
-  }
-  set {
-    name  = local.helm_set_value_serviceType
-    value = local.helm_set_loadbalancer
-  }
-  # metadata {
-  #   namespace = "xsec-vault"
-  # }
-}
+# ##########################################################################
+# #helm#                                        
+# ##########################################################################
+
+
+# resource "helm_release" "hashicorp_vault_xsec_vault" {
+#   name  = local.helm_vault_name
+#   chart = local.helm_vault_chart
+#   values = [
+#     local.helm_vault_values_file
+#   ]
+#   set {
+#     name  = local.helm_set_value_ui
+#     value = local.helm_set_true
+#   }
+#   set {
+#     name  = local.helm_set_value_serviceType
+#     value = local.helm_set_loadbalancer
+#   }
+#   # metadata {
+#   #   namespace = "xsec-vault"
+#   # }
+# }
