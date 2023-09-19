@@ -1,0 +1,46 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+stages:
+  - stage: SecurityScan
+      displayName: 'Security Scan stage'
+      jobs:
+        - job: SecurityScanJob
+          displayName: 'Security Scan job'
+          steps:
+            - task: PowerShell@2
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Install OWASP ZAP
+                  wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Crossplatform.zip -OutFile ZAP_2.11.0_Crossplatform.zip
+                  Expand-Archive -Path ZAP_2.11.0_Crossplatform.zip -DestinationPath $(Agent.TempDirectory)
+                  
+                  # Start OWASP ZAP as a daemon
+                  ./$(Agent.TempDirectory)/ZAP_2.11.0/zap.sh -daemon -port 8090 -config api.disablekey=true
+                  
+                  # Wait for OWASP ZAP to start
+                  Start-Sleep -Seconds 10
+                  
+                  # Execute ZAP scan
+                  ./$(Agent.TempDirectory)/ZAP_2.11.0/zap.sh -cmd -quickurl <YOUR_APPLICATION_URL> -quickprogress
+                  
+                  # Generate ZAP report
+                  ./$(Agent.TempDirectory)/ZAP_2.11.0/zap.sh -cmd -report <REPORT_FILE_PATH> -format html
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
